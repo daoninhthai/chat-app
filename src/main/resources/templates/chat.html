@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat Room</h2>
+            <span id="room-name" th:text="${roomName}">General</span>
+        </div>
+
+        <div class="chat-messages" id="messageArea">
+            <!-- tin nhan se hien thi o day -->
+        </div>
+
+        <div class="chat-input">
+            <form id="messageForm" name="messageForm">
+                <input type="text" id="message" placeholder="Nhap tin nhan..."
+                       autocomplete="off" autofocus/>
+                <button type="submit">Gui</button>
+            </form>
+        </div>
+    </div>
+
+    <input type="hidden" id="username" th:value="${username}"/>
+    <input type="hidden" id="roomId" th:value="${roomId}"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:src="@{/js/chat.js}"></script>
+</body>
+</html>

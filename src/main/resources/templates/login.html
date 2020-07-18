@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App - Dang nhap</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Chat App</h1>
+        <p>Nhap ten de bat dau chat</p>
+
+        <form action="/chat" method="GET" id="loginForm">
+            <div class="form-group">
+                <input type="text" name="username" id="username"
+                       placeholder="Ten cua ban..." required
+                       minlength="2" maxlength="50"/>
+            </div>
+            <button type="submit" class="btn-login">Vao Chat</button>
+        </form>
+    </div>
+</body>
+</html>
