@@ -7,22 +7,49 @@
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h2>Chat Room</h2>
-            <span id="room-name" th:text="${roomName}">General</span>
+    <div class="app-container">
+        <!-- Sidebar danh sach phong -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>Phong Chat</h3>
+                <button id="createRoomBtn" class="btn-create-room" onclick="showCreateRoomDialog()">+</button>
+            </div>
+            <div class="room-list" id="roomList">
+                <!-- danh sach phong se duoc load bang JS -->
+            </div>
         </div>
 
-        <div class="chat-messages" id="messageArea">
-            <!-- tin nhan se hien thi o day -->
-        </div>
+        <!-- Khu vuc chat chinh -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Chat Room</h2>
+                <span id="room-name" th:text="${roomName}">General</span>
+            </div>
 
-        <div class="chat-input">
-            <form id="messageForm" name="messageForm">
-                <input type="text" id="message" placeholder="Nhap tin nhan..."
-                       autocomplete="off" autofocus/>
-                <button type="submit">Gui</button>
-            </form>
+            <div class="chat-messages" id="messageArea">
+                <!-- tin nhan se hien thi o day -->
+            </div>
+
+            <div class="chat-input">
+                <form id="messageForm" name="messageForm">
+                    <input type="text" id="message" placeholder="Nhap tin nhan..."
+                           autocomplete="off" autofocus/>
+                    <button type="submit">Gui</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog tao phong moi -->
+    <div class="modal" id="createRoomModal" style="display: none;">
+        <div class="modal-content">
+            <h3>Tao Phong Chat Moi</h3>
+            <input type="text" id="newRoomName" placeholder="Ten phong..."/>
+            <input type="text" id="newRoomDesc" placeholder="Mo ta (khong bat buoc)..."/>
+            <div class="modal-actions">
+                <button onclick="createRoom()">Tao</button>
+                <button onclick="hideCreateRoomDialog()" class="btn-cancel">Huy</button>
+            </div>
         </div>
     </div>
 
