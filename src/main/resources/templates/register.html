@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App - Dang ky</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Dang Ky</h1>
+        <p>Tao tai khoan de bat dau chat</p>
+
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Ten dang nhap"
+                       required minlength="3" maxlength="50"/>
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Email"
+                       required/>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Mat khau"
+                       required minlength="6"/>
+            </div>
+            <div class="form-group">
+                <input type="text" name="displayName" placeholder="Ten hien thi (khong bat buoc)"/>
+            </div>
+            <button type="submit" class="btn-login">Dang Ky</button>
+        </form>
+
+        <p style="margin-top: 15px; color: #65676b;">
+            Da co tai khoan? <a href="/login" style="color: #1877f2;">Dang nhap</a>
+        </p>
+    </div>
+</body>
+</html>

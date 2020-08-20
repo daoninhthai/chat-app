@@ -9,16 +9,31 @@
 <body>
     <div class="login-container">
         <h1>Chat App</h1>
-        <p>Nhap ten de bat dau chat</p>
+        <p>Dang nhap de bat dau chat</p>
 
-        <form action="/chat" method="GET" id="loginForm">
+        <div th:if="${param.error}" class="alert alert-error">
+            Sai ten dang nhap hoac mat khau!
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            Ban da dang xuat thanh cong.
+        </div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <form th:action="@{/login}" method="POST">
             <div class="form-group">
-                <input type="text" name="username" id="username"
-                       placeholder="Ten cua ban..." required
-                       minlength="2" maxlength="50"/>
+                <input type="text" name="username" placeholder="Ten dang nhap"
+                       required autofocus/>
             </div>
-            <button type="submit" class="btn-login">Vao Chat</button>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Mat khau"
+                       required/>
+            </div>
+            <button type="submit" class="btn-login">Dang Nhap</button>
         </form>
+
+        <p style="margin-top: 15px; color: #65676b;">
+            Chua co tai khoan? <a href="/register" style="color: #1877f2;">Dang ky</a>
+        </p>
     </div>
 </body>
 </html>
