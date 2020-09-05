@@ -70,6 +70,34 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    public void handleUserDisconnect(String username, Long roomId) {
+        if (roomId == null) {
+            logger.warn("User {} disconnect nhung khong co roomId", username);
+            return;
+        }
+
+        try {
+            User sender = userRepository.findByUsername(username).orElse(null);
+            ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+
+            if (sender != null && chatRoom != null) {
+                // luu tin nhan LEAVE vao database
+                ChatMessage leaveMessage = ChatMessage.builder()
+                        .content(username + " da roi phong chat.")
+                        .sender(sender)
+                        .chatRoom(chatRoom)
+                        .timestamp(LocalDateTime.now())
+                        .messageType(ChatMessage.MessageType.LEAVE)
+                        .build();
+
+                chatMessageRepository.save(leaveMessage);
+                logger.info("Da luu thong bao disconnect cho user: {}", username);
+            }
+        } catch (Exception e) {
+            logger.error("Loi khi xu ly disconnect cua user {}: {}", username, e.getMessage());
+        }
+    }
+
     private ChatMessageDto convertToDto(ChatMessage message) {
         return ChatMessageDto.builder()
                 .content(message.getContent())
