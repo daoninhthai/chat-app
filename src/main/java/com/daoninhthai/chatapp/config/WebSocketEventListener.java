@@ -2,6 +2,7 @@ package com.daoninhthai.chatapp.config;
 
 import com.daoninhthai.chatapp.dto.ChatMessageDto;
 import com.daoninhthai.chatapp.service.ChatService;
+import com.daoninhthai.chatapp.service.OnlineUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Component
 public class WebSocketEventListener {
@@ -25,6 +27,9 @@ public class WebSocketEventListener {
     @Autowired
     private ChatService chatService;
 
+    @Autowired
+    private OnlineUserService onlineUserService;
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Nhan duoc ket noi WebSocket moi");
@@ -36,9 +41,13 @@ public class WebSocketEventListener {
 
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         Long roomId = (Long) headerAccessor.getSessionAttributes().get("roomId");
+        String sessionId = headerAccessor.getSessionId();
 
         if (username != null) {
-            logger.info("User {} da ngat ket noi", username);
+            logger.info("User {} da ngat ket noi (session: {})", username, sessionId);
+
+            // cap nhat trang thai online
+            onlineUserService.removeUser(sessionId);
 
             // xu ly khi user mat ket noi
             chatService.handleUserDisconnect(username, roomId);
@@ -54,6 +63,10 @@ public class WebSocketEventListener {
                         .build();
 
                 messagingTemplate.convertAndSend("/topic/room." + roomId, chatMessage);
+
+                // gui cap nhat danh sach online
+                Set<String> onlineUsers = onlineUserService.getOnlineUsers(roomId);
+                messagingTemplate.convertAndSend("/topic/room." + roomId + ".users", onlineUsers);
             }
         }
     }
