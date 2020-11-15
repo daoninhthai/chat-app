@@ -195,3 +195,12 @@ body {
 .chat-input button:hover {
     background-color: #166fe5;
 }
+
+/* Typing Indicator */
+.typing-indicator {
+    padding: 4px 20px;
+    font-size: 12px;
+    color: #65676b;
+    font-style: italic;
+    min-height: 20px;
+}

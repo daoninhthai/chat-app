@@ -3,6 +3,9 @@
 var stompClient = null;
 var username = null;
 var roomId = null;
+var typingTimer = null;
+var isTyping = false;
+var TYPING_TIMEOUT = 500; // debounce 500ms
 
 function connect() {
     username = document.querySelector('#username').value;
@@ -23,6 +26,12 @@ function onConnected() {
     // subscribe vao room
     stompClient.subscribe('/topic/room.' + roomId, onMessageReceived);
 
+    // subscribe vao typing indicator
+    stompClient.subscribe('/topic/room.' + roomId + '.typing', onTypingReceived);
+
+    // subscribe vao danh sach user online
+    stompClient.subscribe('/topic/room.' + roomId + '.users', onUsersUpdate);
+
     // gui thong bao user join
     stompClient.send('/app/chat.addUser/' + roomId, {},
         JSON.stringify({
@@ -30,6 +39,10 @@ function onConnected() {
             type: 'JOIN'
         })
     );
+
+    // bat su kien typing tren input
+    var messageInput = document.querySelector('#message');
+    messageInput.addEventListener('input', handleTypingInput);
 
     console.log('Da ket noi thanh cong!');
 }
@@ -41,6 +54,56 @@ function onError(error) {
     errorElement.className = 'message event';
     errorElement.textContent = 'Khong the ket noi den server. Vui long thu lai!';
     messageArea.appendChild(errorElement);
+}
+
+function handleTypingInput() {
+    if (!stompClient || !stompClient.connected) return;
+
+    // gui typing = true neu chua gui
+    if (!isTyping) {
+        isTyping = true;
+        sendTypingStatus(true);
+    }
+
+    // reset timer moi lan go phim
+    clearTimeout(typingTimer);
+
+    // sau 500ms khong go -> gui typing = false
+    typingTimer = setTimeout(function() {
+        isTyping = false;
+        sendTypingStatus(false);
+    }, TYPING_TIMEOUT);
+}
+
+function sendTypingStatus(typing) {
+    stompClient.send('/app/chat.typing/' + roomId, {},
+        JSON.stringify({
+            username: username,
+            roomId: roomId,
+            isTyping: typing
+        })
+    );
+}
+
+function onTypingReceived(payload) {
+    var typingEvent = JSON.parse(payload.body);
+    var typingIndicator = document.querySelector('#typingIndicator');
+
+    // khong hien thi typing cua chinh minh
+    if (typingEvent.username === username) return;
+
+    if (typingEvent.typing || typingEvent.isTyping) {
+        typingIndicator.textContent = typingEvent.username + ' dang go...';
+        typingIndicator.style.display = 'block';
+    } else {
+        typingIndicator.textContent = '';
+        typingIndicator.style.display = 'none';
+    }
+}
+
+function onUsersUpdate(payload) {
+    var users = JSON.parse(payload.body);
+    console.log('Online users: ', users);
 }
 
 function sendMessage(event) {
@@ -59,6 +122,13 @@ function sendMessage(event) {
         stompClient.send('/app/chat.sendMessage/' + roomId, {},
             JSON.stringify(chatMessage));
         messageInput.value = '';
+
+        // tat typing indicator khi gui tin nhan
+        if (isTyping) {
+            isTyping = false;
+            clearTimeout(typingTimer);
+            sendTypingStatus(false);
+        }
     }
 }
 
@@ -108,5 +178,14 @@ function onMessageReceived(payload) {
 document.addEventListener('DOMContentLoaded', function() {
     var messageForm = document.querySelector('#messageForm');
     messageForm.addEventListener('submit', sendMessage, true);
+
+    // tao typing indicator element
+    var chatInput = document.querySelector('.chat-input');
+    var typingDiv = document.createElement('div');
+    typingDiv.id = 'typingIndicator';
+    typingDiv.className = 'typing-indicator';
+    typingDiv.style.display = 'none';
+    chatInput.parentNode.insertBefore(typingDiv, chatInput);
+
     connect();
 });

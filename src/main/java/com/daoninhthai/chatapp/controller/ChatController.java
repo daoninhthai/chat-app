@@ -1,6 +1,7 @@
 package com.daoninhthai.chatapp.controller;
 
 import com.daoninhthai.chatapp.dto.ChatMessageDto;
+import com.daoninhthai.chatapp.dto.TypingEvent;
 import com.daoninhthai.chatapp.service.ChatService;
 import com.daoninhthai.chatapp.service.OnlineUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,12 @@ public class ChatController {
         chatMessage.setContent(username + " da tham gia phong chat!");
 
         return chatMessage;
+    }
+
+    @MessageMapping("/chat.typing/{roomId}")
+    public void handleTyping(@DestinationVariable Long roomId,
+                             @Payload TypingEvent typingEvent) {
+        typingEvent.setRoomId(roomId);
+        messagingTemplate.convertAndSend("/topic/room." + roomId + ".typing", typingEvent);
     }
 }
