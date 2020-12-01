@@ -132,6 +132,31 @@ function sendMessage(event) {
     }
 }
 
+/**
+ * Format noi dung tin nhan voi cac dinh dang:
+ * **bold** -> <strong>bold</strong>
+ * *italic* -> <em>italic</em>
+ * `code` -> <code>code</code>
+ */
+function formatMessageContent(text) {
+    // escape HTML truoc
+    var escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    // format bold: **text**
+    var formatted = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // format italic: *text* (nhung khong match **text**)
+    formatted = formatted.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+
+    // format inline code: `text`
+    formatted = formatted.replace(/`(.+?)`/g, '<code>$1</code>');
+
+    return formatted;
+}
+
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
     var messageArea = document.querySelector('#messageArea');
@@ -157,7 +182,8 @@ function onMessageReceived(payload) {
 
         var textElement = document.createElement('div');
         textElement.className = 'message-text';
-        textElement.textContent = message.content;
+        // su dung formatMessageContent thay vi textContent
+        textElement.innerHTML = formatMessageContent(message.content);
         messageElement.appendChild(textElement);
 
         var timeElement = document.createElement('div');
@@ -186,6 +212,31 @@ document.addEventListener('DOMContentLoaded', function() {
     typingDiv.className = 'typing-indicator';
     typingDiv.style.display = 'none';
     chatInput.parentNode.insertBefore(typingDiv, chatInput);
+
+    // tao emoji toggle button va picker
+    var messageInput = document.querySelector('#message');
+    var inputContainer = messageInput.parentNode;
+
+    var emojiBtn = document.createElement('button');
+    emojiBtn.type = 'button';
+    emojiBtn.id = 'emojiToggle';
+    emojiBtn.className = 'emoji-toggle-btn';
+    emojiBtn.textContent = '😀';
+    emojiBtn.title = 'Chon emoji';
+    emojiBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        toggleEmojiPicker();
+    });
+
+    // chen emoji button truoc input
+    inputContainer.insertBefore(emojiBtn, messageInput);
+
+    // tao emoji picker va chen vao DOM
+    var picker = createEmojiPicker(messageInput);
+    picker.style.display = 'none';
+    var chatInputDiv = document.querySelector('.chat-input');
+    chatInputDiv.style.position = 'relative';
+    chatInputDiv.appendChild(picker);
 
     connect();
 });

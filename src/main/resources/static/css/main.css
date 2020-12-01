@@ -164,6 +164,7 @@ body {
 .chat-input form {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .chat-input input {
@@ -203,4 +204,90 @@ body {
     color: #65676b;
     font-style: italic;
     min-height: 20px;
+}
+
+/* Emoji Toggle Button */
+.emoji-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    line-height: 1;
+}
+
+.emoji-toggle-btn:hover {
+    background-color: #f0f2f5;
+}
+
+/* Emoji Picker */
+.emoji-picker {
+    position: absolute;
+    bottom: 70px;
+    left: 20px;
+    width: 320px;
+    max-height: 300px;
+    background: white;
+    border: 1px solid #e4e6eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.emoji-picker-header {
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #65676b;
+    border-bottom: 1px solid #e4e6eb;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 2px;
+    padding: 8px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.emoji-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.15s;
+    line-height: 1;
+    text-align: center;
+}
+
+.emoji-btn:hover {
+    background-color: #f0f2f5;
+    transform: scale(1.15);
+}
+
+/* Message Formatting Styles */
+.message-text strong {
+    font-weight: 700;
+}
+
+.message-text em {
+    font-style: italic;
+}
+
+.message-text code {
+    background-color: rgba(0, 0, 0, 0.08);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+}
+
+.message.sent .message-text code {
+    background-color: rgba(255, 255, 255, 0.2);
 }
