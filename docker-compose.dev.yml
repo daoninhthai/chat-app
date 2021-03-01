@@ -1,0 +1,27 @@
+version: '3.8'
+
+# Chi chay PostgreSQL cho moi truong dev
+# Su dung: docker-compose -f docker-compose.dev.yml up -d
+# Backend chay tren may local voi: mvn spring-boot:run
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: chat-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: chatapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_dev_data:
+    driver: local
