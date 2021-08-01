@@ -32,6 +32,12 @@ public class User {
     @Column(name = "display_name", length = 100)
     private String displayName;
 
+    @Column(length = 500)
+    private String bio;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
