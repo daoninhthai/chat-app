@@ -51,4 +51,13 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
                                                         Pageable pageable);
 
     long countBySenderId(Long senderId);
+
+    List<ChatMessage> findByParentMessageIdOrderByTimestampAsc(Long parentMessageId);
+
+    long countByParentMessageId(Long parentMessageId);
+
+    long countByChatRoomId(Long chatRoomId);
+
+    @Query("SELECT COUNT(m) FROM ChatMessage m WHERE m.timestamp > :since")
+    long countMessagesSince(@Param("since") LocalDateTime since);
 }

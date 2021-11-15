@@ -38,6 +38,12 @@ public class ChatMessage {
     @Column(name = "message_type", nullable = false)
     private MessageType messageType;
 
+    @Column(name = "parent_message_id")
+    private Long parentMessageId;
+
+    @Column(name = "is_thread")
+    private boolean isThread;
+
     public enum MessageType {
         CHAT,
         JOIN,
