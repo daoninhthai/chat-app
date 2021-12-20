@@ -63,4 +63,8 @@ public class OnlineUserService {
         Set<String> users = onlineUsersPerRoom.get(roomId);
         return users != null && users.contains(username);
     }
+
+    public long getTotalOnlineUsers() {
+        return sessionUserMap.size();
+    }
 }
